@@ -42,3 +42,9 @@ def calculate_recovery_score(df):
     df['Recovery_Score'] = df['Recovery_Score'].clip(0, 100)
 
     return df
+
+def process_data():
+    df = load_data()  # Call to load and clean the data
+    df = calculate_recovery_score(df)  # Add the recovery score
+    return df  # Return the final processed DataFrame
+
