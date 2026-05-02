@@ -7,8 +7,9 @@ import random
 random.seed(42)
 np.random.seed(42)
 
-# Generate date range for 2025
-start_date = datetime(2025, 1, 1)
+# Generate date range for the past 365 days leading up to today
+end_date = datetime.now()
+start_date = end_date - timedelta(days=364)
 dates = [start_date + timedelta(days=i) for i in range(365)]
 
 # Generate synthetic data

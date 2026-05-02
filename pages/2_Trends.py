@@ -1,10 +1,10 @@
 import streamlit as st
+# ------------------ CONFIG ------------------
+st.set_page_config(layout="wide", page_title="Trends & Insights")
+
 from modules.processor import process_data
 import pandas as pd
 import plotly.express as px
-
-# ------------------ CONFIG ------------------
-st.set_page_config(layout="wide", page_title="Trends & Insights")
 st.title("Trends & Insights")
 
 # ------------------ DATA LOADING ------------------
@@ -32,14 +32,20 @@ if df['Date'].isnull().any():
     df = df.dropna(subset=['Date'])
 
 # ------------------ FILTERING ------------------
-today = pd.Timestamp.today()
+max_date = df['Date'].max()
+if pd.isna(max_date):
+    max_date = pd.Timestamp.today()
 
 if time_range == "Last 7 Days":
-    filtered_df = df[df['Date'] >= today - pd.Timedelta(days=7)].copy()
+    filtered_df = df[df['Date'] >= max_date - pd.Timedelta(days=7)].copy()
 elif time_range == "Last 30 Days":
-    filtered_df = df[df['Date'] >= today - pd.Timedelta(days=30)].copy()
+    filtered_df = df[df['Date'] >= max_date - pd.Timedelta(days=30)].copy()
 else:
     filtered_df = df.copy()
+
+if filtered_df.empty:
+    st.warning("No data available for the selected time range.")
+    st.stop()
 
 # ------------------ SUMMARY ------------------
 summary = filtered_df.agg({

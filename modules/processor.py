@@ -5,18 +5,17 @@ def load_data():
     # Read the CSV file into a DataFrame
     df = pd.read_csv('data/health_data.csv')
     
-    # Fill missing values
     # Fill missing 'Steps' with the median of that column
-    df['Steps'].fillna(df['Steps'].median(), inplace=True)
+    df['Steps'] = df['Steps'].fillna(df['Steps'].median())
     
     # Fill missing 'Sleep_Hours' with a default value of 7.0
-    df['Sleep_Hours'].fillna(7.0, inplace=True)
+    df['Sleep_Hours'] = df['Sleep_Hours'].fillna(7.0)
     
     # Fill missing 'Heart_Rate_bpm' with a default value of 68
-    df['Heart_Rate_bpm'].fillna(68, inplace=True)
+    df['Heart_Rate_bpm'] = df['Heart_Rate_bpm'].fillna(68)
     
     # Fill other columns with their respective median
-    df.fillna(df.median(numeric_only=True), inplace=True)
+    df = df.fillna(df.median(numeric_only=True))
     
     # Convert 'Date' column to datetime objects
     df['Date'] = pd.to_datetime(df['Date'])

@@ -1,20 +1,21 @@
 import streamlit as st
+# Set up the page configuration
+st.set_page_config(layout="wide", page_title="FitSync")
+
 from modules.processor import process_data
 import pandas as pd
 import plotly.express as px
 
 # Add caching for data processing step
-def load_data():
+@st.cache_data
+def get_data():
     return process_data()
-
-# Set up the page configuration
-st.set_page_config(layout="wide", page_title="FitSync")
 
 # Add a title to the app
 st.title("FitSync - Personal Health Analytics")
 
 # Process and load the data with caching
-df = st.cache_data(load_data)()
+df = get_data()
 # Sidebar for filters
 st.sidebar.header("Filters")
 time_range = st.sidebar.selectbox(
@@ -24,12 +25,20 @@ time_range = st.sidebar.selectbox(
 )
 
 # Filter the dataframe based on the selected time range
+max_date = df['Date'].max()
+if pd.isna(max_date):
+    max_date = pd.to_datetime('today')
+
 if time_range == "Last 7 Days":
-    filtered_df = df[df['Date'] >= pd.to_datetime('today') - pd.Timedelta(days=7)]
+    filtered_df = df[df['Date'] >= max_date - pd.Timedelta(days=7)]
 elif time_range == "Last 30 Days":
-    filtered_df = df[df['Date'] >= pd.to_datetime('today') - pd.Timedelta(days=30)]
+    filtered_df = df[df['Date'] >= max_date - pd.Timedelta(days=30)]
 else:
     filtered_df = df
+
+if filtered_df.empty:
+    st.warning("No data available for the selected time range.")
+    st.stop()
 
 # Re-calculate average values from the filtered DataFrame
 average_steps = filtered_df['Steps'].mean()
