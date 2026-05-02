@@ -1,9 +1,7 @@
-#force build
-streamlit>=1.33.0
-pandas>=2.2.2
-numpy>=2.0.0
-plotly>=5.22.0
+pandas==2.2.2
+numpy==1.26.4
+streamlit==1.35.0
+plotly==5.22.0
+requests==2.32.3
 streamlit-lottie==0.0.5
-requests>=2.33.0
-pytest>=8.0.0
-pillow>=10.4.0
+pytest==7.4.2
