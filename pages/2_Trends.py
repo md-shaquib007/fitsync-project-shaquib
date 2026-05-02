@@ -64,7 +64,7 @@ try:
     monthly_avg_recovery = (
         filtered_df
         .set_index('Date')
-        .resample('M')
+        .resample('ME')
         .mean(numeric_only=True)
         .reset_index()
     )
