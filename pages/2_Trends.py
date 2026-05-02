@@ -32,6 +32,14 @@ elif time_range == "Last 30 Days":
 else:
     filtered_df = df
 
+# Ensure 'Date' is a datetime object and handle errors
+try:
+    filtered_df['Date'] = pd.to_datetime(filtered_df['Date'], errors='coerce')
+    if filtered_df['Date'].isnull().any():
+        st.warning("Some dates in the dataset are invalid and will not be used in the monthly calculations.")
+except Exception as e:
+    st.error(f"An error occurred while converting dates: {e}")
+
 # Calculate summary statistics
 summary = filtered_df.agg({
     "Recovery_Score": ['mean', 'min', 'max'],
@@ -45,7 +53,8 @@ st.subheader("Summary Statistics")
 st.dataframe(summary)
 
 # Line chart for average Recovery Score month-wise
-monthly_avg_recovery = filtered_df.resample('M', on='Date').mean(numeric_only=True)
+to_resample_df = filtered_df.dropna(subset=['Date'])  # Drop rows where 'Date' conversion failed
+monthly_avg_recovery = to_resample_df.resample('M', on='Date').mean(numeric_only=True)
 line_chart_recovery = px.line(
     monthly_avg_recovery, y='Recovery_Score',
     title="Average Monthly Recovery Score",
