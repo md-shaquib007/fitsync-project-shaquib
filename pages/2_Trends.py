@@ -60,14 +60,23 @@ st.dataframe(summary)
 
 # ------------------ MONTHLY TREND ------------------
 try:
-    # safer resampling
-    monthly_avg_recovery = (
-        filtered_df
-        .set_index('Date')
-        .resample('ME')
-        .mean(numeric_only=True)
-        .reset_index()
-    )
+    # Try modern pandas frequency ('ME') first, fallback to older ('M') if invalid
+    try:
+        monthly_avg_recovery = (
+            filtered_df
+            .set_index('Date')
+            .resample('ME')
+            .mean(numeric_only=True)
+            .reset_index()
+        )
+    except ValueError:
+        monthly_avg_recovery = (
+            filtered_df
+            .set_index('Date')
+            .resample('M')
+            .mean(numeric_only=True)
+            .reset_index()
+        )
 
     line_chart_recovery = px.line(
         monthly_avg_recovery,
