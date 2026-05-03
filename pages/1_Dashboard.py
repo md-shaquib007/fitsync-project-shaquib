@@ -6,16 +6,11 @@ from modules.processor import process_data
 import pandas as pd
 import plotly.express as px
 
-# Add caching for data processing step
-@st.cache_data
-def get_data():
-    return process_data()
-
 # Add a title to the app
 st.title("FitSync - Personal Health Analytics")
 
 # Process and load the data with caching
-df = get_data()
+df = process_data()
 # Sidebar for filters
 st.sidebar.header("Filters")
 time_range = st.sidebar.selectbox(

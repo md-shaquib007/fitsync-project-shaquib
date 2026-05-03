@@ -1,6 +1,8 @@
 import pandas as pd
+import streamlit as st
 
 # Function to load and process health data from a CSV file
+@st.cache_data
 def load_data():
     # Read the CSV file into a DataFrame
     df = pd.read_csv('data/health_data.csv')
@@ -15,7 +17,9 @@ def load_data():
     df['Heart_Rate_bpm'] = df['Heart_Rate_bpm'].fillna(68)
     
     # Fill other columns with their respective median
-    df = df.fillna(df.median(numeric_only=True))
+    numeric_cols = df.select_dtypes(include='number').columns
+    for col in numeric_cols:
+        df[col] = df[col].fillna(df[col].median())
     
     # Convert 'Date' column to datetime objects
     df['Date'] = pd.to_datetime(df['Date'])
@@ -42,8 +46,8 @@ def calculate_recovery_score(df):
 
     return df
 
+@st.cache_data
 def process_data():
     df = load_data()  # Call to load and clean the data
     df = calculate_recovery_score(df)  # Add the recovery score
     return df  # Return the final processed DataFrame
-

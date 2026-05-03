@@ -8,11 +8,7 @@ import plotly.express as px
 st.title("Trends & Insights")
 
 # ------------------ DATA LOADING ------------------
-@st.cache_data
-def load_data():
-    return process_data()
-
-df = load_data()
+df = process_data()
 
 # ------------------ SIDEBAR ------------------
 st.sidebar.header("Filters")
@@ -22,14 +18,7 @@ time_range = st.sidebar.selectbox(
     index=2
 )
 
-# ------------------ DATE HANDLING ------------------
-# Convert safely
-df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-
-# Remove invalid dates early
-if df['Date'].isnull().any():
-    st.warning("Some invalid dates were removed.")
-    df = df.dropna(subset=['Date'])
+# Date is already converted in processor.py, so no need to convert again.
 
 # ------------------ FILTERING ------------------
 max_date = df['Date'].max()
