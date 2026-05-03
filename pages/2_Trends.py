@@ -15,9 +15,13 @@ def load_data():
 df = load_data()
 
 # ------------------ SIDEBAR ------------------
+df = load_data()
+
+# ------------------ SIDEBAR ------------------
 st.sidebar.header("Filters")
 time_range = st.sidebar.selectbox(
     "Select Time Range",
+    ["Last 7 Days", "Last 30 Days", "All Time"],
     ["Last 7 Days", "Last 30 Days", "All Time"],
     index=2
 )
@@ -37,8 +41,10 @@ if pd.isna(max_date):
     max_date = pd.Timestamp.today()
 
 if time_range == "Last 7 Days":
+    filtered_df = df[df['Date'] >= today - pd.Timedelta(days=7)].copy()
     filtered_df = df[df['Date'] >= max_date - pd.Timedelta(days=7)].copy()
 elif time_range == "Last 30 Days":
+    filtered_df = df[df['Date'] >= today - pd.Timedelta(days=30)].copy()
     filtered_df = df[df['Date'] >= max_date - pd.Timedelta(days=30)].copy()
 else:
     filtered_df = df.copy()
@@ -88,12 +94,15 @@ try:
     )
 
     st.plotly_chart(line_chart_recovery, use_container_width=True)
+    st.plotly_chart(line_chart_recovery, use_container_width=True)
 
 except Exception as e:
     st.error(f"Resampling error: {e}")
 
 # ------------------ HISTOGRAMS ------------------
+# ------------------ HISTOGRAMS ------------------
 st.subheader("Distributions of Key Metrics")
+
 
 col1, col2 = st.columns(2)
 
@@ -106,8 +115,24 @@ with col1:
         px.histogram(filtered_df, x='Recovery_Score', title='Recovery Score Distribution'),
         use_container_width=True
     )
+    st.plotly_chart(
+        px.histogram(filtered_df, x='Steps', title='Steps Distribution'),
+        use_container_width=True
+    )
+    st.plotly_chart(
+        px.histogram(filtered_df, x='Recovery_Score', title='Recovery Score Distribution'),
+        use_container_width=True
+    )
 
 with col2:
+    st.plotly_chart(
+        px.histogram(filtered_df, x='Calories_Burned', title='Calories Burned Distribution'),
+        use_container_width=True
+    )
+    st.plotly_chart(
+        px.histogram(filtered_df, x='Sleep_Hours', title='Sleep Hours Distribution'),
+        use_container_width=True
+    )
     st.plotly_chart(
         px.histogram(filtered_df, x='Calories_Burned', title='Calories Burned Distribution'),
         use_container_width=True

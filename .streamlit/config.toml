@@ -1,2 +1,7 @@
+[server]
+websocketPingTimeout = 300
+websocketPingInterval = 300
+enableWebsocketCompression = false
+
 [theme]
-base="dark"
+base = "dark"
